@@ -137,21 +137,34 @@ const Sidebar = ({
   );
 };
 
-const Part1View = ({ exercise, onComplete }: { exercise: Part1Exercise, onComplete: (score: number) => void }) => {
-  const [userAnswers, setUserAnswers] = useState<Record<number, string>>({});
-  const [showAnswers, setShowAnswers] = useState(false);
+const Part1View = ({ 
+  exercise, 
+  userAnswers, 
+  onAnswersChange, 
+  onComplete,
+  isReviewMode,
+  onBackToResult
+}: { 
+  exercise: Part1Exercise, 
+  userAnswers: Record<number, string>,
+  onAnswersChange: (answers: Record<number, string>) => void,
+  onComplete: (score: number) => void,
+  isReviewMode?: boolean,
+  onBackToResult?: () => void
+}) => {
+  const [showAnswers, setShowAnswers] = useState(isReviewMode || false);
 
   useEffect(() => {
-    setUserAnswers({});
-    setShowAnswers(false);
-  }, [exercise]);
+    if (isReviewMode) setShowAnswers(true);
+  }, [isReviewMode]);
 
   const handleInputChange = (id: number, value: string) => {
-    setUserAnswers(prev => ({ ...prev, [id]: value }));
+    if (isReviewMode) return;
+    onAnswersChange({ ...userAnswers, [id]: value });
   };
 
   const handleRetry = () => {
-    setUserAnswers({});
+    onAnswersChange({});
     setShowAnswers(false);
   };
 
@@ -266,13 +279,23 @@ const Part1View = ({ exercise, onComplete }: { exercise: Part1Exercise, onComple
             <RotateCcw className="w-5 h-5" />
             Làm lại
           </button>
-          <button
-            onClick={handleFinish}
-            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-3 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-600/20"
-          >
-            Hoàn thành
-            <ChevronRight className="w-5 h-5" />
-          </button>
+          {isReviewMode ? (
+            <button
+              onClick={onBackToResult}
+              className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-3 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-600/20"
+            >
+              Quay lại kết quả
+              <CheckCircle2 className="w-5 h-5" />
+            </button>
+          ) : (
+            <button
+              onClick={handleFinish}
+              className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-3 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-600/20"
+            >
+              Hoàn thành
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          )}
         </div>
       </div>
 
@@ -308,20 +331,34 @@ const Part1View = ({ exercise, onComplete }: { exercise: Part1Exercise, onComple
   );
 };
 
-const Part2View = ({ exercise, onComplete }: { exercise: Part2Exercise, onComplete: (score: number) => void }) => {
-  const [userAnswers, setUserAnswers] = useState<Record<number, string>>({});
-  const [showResults, setShowResults] = useState(false);
-  const [showAnswers, setShowAnswers] = useState(false);
+const Part2View = ({ 
+  exercise, 
+  userAnswers, 
+  onAnswersChange, 
+  onComplete,
+  isReviewMode,
+  onBackToResult
+}: { 
+  exercise: Part2Exercise, 
+  userAnswers: Record<number, string>,
+  onAnswersChange: (answers: Record<number, string>) => void,
+  onComplete: (score: number) => void,
+  isReviewMode?: boolean,
+  onBackToResult?: () => void
+}) => {
+  const [showResults, setShowResults] = useState(isReviewMode || false);
+  const [showAnswers, setShowAnswers] = useState(isReviewMode || false);
 
   useEffect(() => {
-    setUserAnswers({});
-    setShowResults(false);
-    setShowAnswers(false);
-  }, [exercise]);
+    if (isReviewMode) {
+      setShowResults(true);
+      setShowAnswers(true);
+    }
+  }, [isReviewMode]);
 
   const handleSelect = (questionId: number, option: string) => {
-    if (showResults) return;
-    setUserAnswers(prev => ({ ...prev, [questionId]: option }));
+    if (showResults || isReviewMode) return;
+    onAnswersChange({ ...userAnswers, [questionId]: option });
   };
 
   const handleFinish = () => {
@@ -335,7 +372,7 @@ const Part2View = ({ exercise, onComplete }: { exercise: Part2Exercise, onComple
   };
 
   const handleRetry = () => {
-    setUserAnswers({});
+    onAnswersChange({});
     setShowResults(false);
     setShowAnswers(false);
   };
@@ -440,13 +477,22 @@ const Part2View = ({ exercise, onComplete }: { exercise: Part2Exercise, onComple
           >
             Làm lại
           </button>
-          <button
-            onClick={handleFinish}
-            disabled={showResults}
-            className="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white px-12 py-4 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-600/20"
-          >
-            {showResults ? "Đang chấm điểm..." : "Nộp bài"}
-          </button>
+          {isReviewMode ? (
+            <button
+              onClick={onBackToResult}
+              className="bg-indigo-600 hover:bg-indigo-500 text-white px-12 py-4 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-600/20"
+            >
+              Quay lại kết quả
+            </button>
+          ) : (
+            <button
+              onClick={handleFinish}
+              disabled={showResults}
+              className="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white px-12 py-4 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-600/20"
+            >
+              {showResults ? "Đang chấm điểm..." : "Nộp bài"}
+            </button>
+          )}
         </div>
       </div>
 
@@ -482,7 +528,19 @@ const Part2View = ({ exercise, onComplete }: { exercise: Part2Exercise, onComple
   );
 };
 
-const ResultView = ({ score, total, onRetry, onNext }: { score: number, total: number, onRetry: () => void, onNext: () => void }) => {
+const ResultView = ({ 
+  score, 
+  total, 
+  onRetry, 
+  onNext,
+  onReview 
+}: { 
+  score: number, 
+  total: number, 
+  onRetry: () => void, 
+  onNext: () => void,
+  onReview: () => void
+}) => {
   const percentage = Math.round((score / total) * 100);
   
   return (
@@ -529,20 +587,29 @@ const ResultView = ({ score, total, onRetry, onNext }: { score: number, total: n
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="flex flex-col gap-4">
+        <div className="grid grid-cols-2 gap-4">
+          <button
+            onClick={onRetry}
+            className="flex items-center justify-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-white py-4 rounded-2xl font-bold transition-all"
+          >
+            <RotateCcw className="w-5 h-5" />
+            Làm lại
+          </button>
+          <button
+            onClick={onNext}
+            className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white py-4 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-600/20"
+          >
+            <ChevronRight className="w-5 h-5" />
+            Tiếp theo
+          </button>
+        </div>
         <button
-          onClick={onRetry}
-          className="flex items-center justify-center gap-2 bg-zinc-800 hover:bg-zinc-700 text-white py-4 rounded-2xl font-bold transition-all"
+          onClick={onReview}
+          className="flex items-center justify-center gap-2 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 py-4 rounded-2xl font-bold transition-all border border-zinc-800"
         >
-          <RotateCcw className="w-5 h-5" />
-          Làm lại
-        </button>
-        <button
-          onClick={onNext}
-          className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white py-4 rounded-2xl font-bold transition-all shadow-lg shadow-indigo-600/20"
-        >
-          <ChevronRight className="w-5 h-5" />
-          Tiếp theo
+          <SidebarIcon className="w-5 h-5" />
+          Xem lại bài làm
         </button>
       </div>
     </motion.div>
@@ -556,7 +623,9 @@ export default function App() {
   const [currentExerciseId, setCurrentExerciseId] = useState<string>(LISTENING_DATA.part1[0].id);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isFinished, setIsFinished] = useState(false);
+  const [isReviewMode, setIsReviewMode] = useState(false);
   const [finalScore, setFinalScore] = useState(0);
+  const [userAnswers, setUserAnswers] = useState<Record<number, string>>({});
 
   useEffect(() => {
     if (window.innerWidth < 1024) {
@@ -575,15 +644,30 @@ export default function App() {
     setCurrentPart(part);
     setCurrentExerciseId(id);
     setIsFinished(false);
+    setIsReviewMode(false);
+    setUserAnswers({});
   };
 
   const handleComplete = (score: number) => {
     setFinalScore(score);
     setIsFinished(true);
+    setIsReviewMode(false);
   };
 
   const handleRetry = () => {
     setIsFinished(false);
+    setIsReviewMode(false);
+    setUserAnswers({});
+  };
+
+  const handleReview = () => {
+    setIsFinished(false);
+    setIsReviewMode(true);
+  };
+
+  const handleBackToResult = () => {
+    setIsReviewMode(false);
+    setIsFinished(true);
   };
 
   const handleNextExercise = () => {
@@ -594,14 +678,20 @@ export default function App() {
       // Go to next exercise in same part
       setCurrentExerciseId(currentPartList[currentIndex + 1].id);
       setIsFinished(false);
+      setIsReviewMode(false);
+      setUserAnswers({});
     } else if (currentPart === 'part1') {
       // Go to first exercise of part 2
       setCurrentPart('part2');
       setCurrentExerciseId(LISTENING_DATA.part2[0].id);
       setIsFinished(false);
+      setIsReviewMode(false);
+      setUserAnswers({});
     } else {
       // End of all exercises, maybe just reset or stay
       setIsFinished(false);
+      setIsReviewMode(false);
+      setUserAnswers({});
       setCurrentPart('part1');
       setCurrentExerciseId(LISTENING_DATA.part1[0].id);
     }
@@ -657,6 +747,7 @@ export default function App() {
                 total={currentExercise.questions.length} 
                 onRetry={handleRetry} 
                 onNext={handleNextExercise}
+                onReview={handleReview}
               />
             ) : currentPart === 'part1' ? (
               <motion.div
@@ -668,7 +759,11 @@ export default function App() {
               >
                 <Part1View 
                   exercise={currentExercise as Part1Exercise} 
+                  userAnswers={userAnswers}
+                  onAnswersChange={setUserAnswers}
                   onComplete={handleComplete} 
+                  isReviewMode={isReviewMode}
+                  onBackToResult={handleBackToResult}
                 />
               </motion.div>
             ) : (
@@ -681,7 +776,11 @@ export default function App() {
               >
                 <Part2View 
                   exercise={currentExercise as Part2Exercise} 
+                  userAnswers={userAnswers}
+                  onAnswersChange={setUserAnswers}
                   onComplete={handleComplete} 
+                  isReviewMode={isReviewMode}
+                  onBackToResult={handleBackToResult}
                 />
               </motion.div>
             )}

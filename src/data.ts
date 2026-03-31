@@ -25,7 +25,7 @@ export interface Part2Exercise {
   questions: Part2Question[];
 }
 
-export const LISTENING_DATA: { part1: Part1Exercise[]; part2: Part2Exercise[] } = {
+export const LISTENING_DATA: { part1: Part1Exercise[]; part2: Part2Exercise[]; part3: Part2Exercise[] } = {
   part1: [
     {
       id: "l1",
@@ -207,6 +207,50 @@ export const LISTENING_DATA: { part1: Part1Exercise[]; part2: Part2Exercise[] } 
         { id: 18, groupTitle: "Conversation 3", question: "How will the group get to the hotel from the airport?", options: ["They will take taxis", "They will ride the subway.", "They will be going by bus.", "They can choose either bus or subway"], answer: "C" },
         { id: 19, groupTitle: "Conversation 3", question: "What is the group planning to do around Times Square for about an hour?", options: ["They're going to have lunch.", "They will have time to do some shopping.", "They will see a festival.", "They will be having a tour of the area."], answer: "A" },
         { id: 20, groupTitle: "Conversation 3", question: "What are they going to do after dinner?", options: ["The group is going to watch a musical.", "They will catch an exciting movie.", "They will be attending a Broadway play.", "They will see a football match."], answer: "A" },
+      ]
+    }
+  ],
+  part3: [
+    {
+      id: "l16",
+      title: "Đề Nghe 1+6",
+      questions: [
+        { id: 1, question: "What time is it?", options: ["02.10", "02.20", "02.30", "03.20"], answer: "C" },
+        { id: 2, question: "What's Michelle going to read?", options: ["book", "letter", "newspaper", "magazine"], answer: "B" },
+        { id: 3, question: "How much did the tickets cost?", options: ["$19", "$90", "$99", "$9"], answer: "B" },
+        { id: 4, question: "What is the man going to buy?", options: ["sunglasses", "something to read", "pills", "food"], answer: "C" },
+        { id: 5, question: "Which dress is Kate talking about?", options: ["a dress with no button", "a dress with many buttons", "a dress with collar", "a dress with no collar"], answer: "C" },
+        { id: 6, question: "When will Jane meet them?", options: ["08:00", "08:30", "08:45", "03:15"], answer: "C" },
+        { id: 7, question: "Which morning activity is for beginners?", options: ["windsurfing", "swimming", "sailing", "running"], answer: "B" },
+        { id: 8, question: "Which painting does the woman decide to buy?", options: ["a painting with boats", "a painting with flowers", "a painting with horses", "a painting with white clouds"], answer: "A" },
+      ]
+    },
+    {
+      id: "l8",
+      title: "Đề Nghe 8",
+      questions: [
+        { id: 1, question: "What have they forgotten?", options: ["ticket", "camera", "passport", "bag"], answer: "B" },
+        { id: 2, question: "What time does the train go?", options: ["06.15", "07.40", "06.10", "07.10"], answer: "A" },
+        { id: 3, question: "How did the woman get to work?", options: ["by bicycle", "by bus", "by car", "by train"], answer: "C" },
+        { id: 4, question: "Where are the man’s shoes?", options: ["under the chair", "by the television", "by the door with the other rubbish", "under the table"], answer: "C" },
+        { id: 5, question: "What will Paul get at the shop?", options: ["mushrooms", "onions", "carrots", "red pepper"], answer: "C" },
+        { id: 6, question: "How were they told to do their homework?", options: ["write it in the books", "write it on paper", "type it", "email it"], answer: "A" },
+        { id: 7, question: "What did Helen buy?", options: ["gloves", "sweater", "socks", "hat"], answer: "B" },
+        { id: 8, question: "How did the woman get to work today?", options: ["by bus", "a neighbour offered her a lift", "by bike", "walk"], answer: "B" },
+      ]
+    },
+    {
+      id: "l9",
+      title: "Đề Nghe 9",
+      questions: [
+        { id: 1, question: "What colour is Mary’s coat?", options: ["yellow", "blue", "brown", "black"], answer: "A" },
+        { id: 2, question: "What did the woman repair?", options: ["chair", "shelf", "desk", "bed"], answer: "B" },
+        { id: 3, question: "What are they going to buy for Pam?", options: ["a book", "a plant", "some chocolates", "candies"], answer: "B" },
+        { id: 4, question: "What has the girl lost?", options: ["mobile phone", "purse", "pen", "bag"], answer: "B" },
+        { id: 5, question: "Which sport will the boy do soon at the centre?", options: ["waterskiing", "diving", "sailing", "swimming"], answer: "C" },
+        { id: 6, question: "Who lives with Josh in his house?", options: ["his grandmother", "his father", "his sister", "his mother"], answer: "A" },
+        { id: 7, question: "What will the girl take with her on holiday?", options: ["suitcase", "sports bag", "backpack", "overhead bag"], answer: "B" },
+        { id: 8, question: "Where do the boys decide to go?", options: ["cinema", "game store", "park", "library"], answer: "A" },
       ]
     }
   ]

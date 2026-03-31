@@ -35,9 +35,9 @@ const Sidebar = ({
   isOpen, 
   onClose 
 }: { 
-  currentPart: 'part1' | 'part2', 
+  currentPart: 'part1' | 'part2' | 'part3', 
   currentExerciseId: string, 
-  onSelect: (part: 'part1' | 'part2', id: string) => void,
+  onSelect: (part: 'part1' | 'part2' | 'part3', id: string) => void,
   isOpen: boolean,
   onClose: () => void
 }) => {
@@ -120,6 +120,30 @@ const Sidebar = ({
                 >
                   <span>{ex.title}</span>
                   <ChevronRight className={`w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity ${currentPart === 'part2' && currentExerciseId === ex.id ? 'opacity-100' : ''}`} />
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {/* Part 3 Section */}
+          <section>
+            <div className="flex items-center gap-2 px-3 mb-3 text-zinc-500 uppercase text-xs font-bold tracking-widest">
+              <ListChecks className="w-3 h-3" />
+              <span>Phần 3: Trắc nghiệm</span>
+            </div>
+            <div className="space-y-1">
+              {LISTENING_DATA.part3.map(ex => (
+                <button
+                  key={ex.id}
+                  onClick={() => { onSelect('part3', ex.id); onClose(); }}
+                  className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition-all flex items-center justify-between group ${
+                    currentPart === 'part3' && currentExerciseId === ex.id 
+                      ? 'bg-indigo-600/10 text-indigo-400 font-medium border border-indigo-600/20' 
+                      : 'text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200'
+                  }`}
+                >
+                  <span>{ex.title}</span>
+                  <ChevronRight className={`w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity ${currentPart === 'part3' && currentExerciseId === ex.id ? 'opacity-100' : ''}`} />
                 </button>
               ))}
             </div>
@@ -619,7 +643,7 @@ const ResultView = ({
 // --- Main App ---
 
 export default function App() {
-  const [currentPart, setCurrentPart] = useState<'part1' | 'part2'>('part1');
+  const [currentPart, setCurrentPart] = useState<'part1' | 'part2' | 'part3'>('part1');
   const [currentExerciseId, setCurrentExerciseId] = useState<string>(LISTENING_DATA.part1[0].id);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isFinished, setIsFinished] = useState(false);
@@ -637,10 +661,13 @@ export default function App() {
     if (currentPart === 'part1') {
       return LISTENING_DATA.part1.find(ex => ex.id === currentExerciseId) as Part1Exercise;
     }
-    return LISTENING_DATA.part2.find(ex => ex.id === currentExerciseId) as Part2Exercise;
+    if (currentPart === 'part2') {
+      return LISTENING_DATA.part2.find(ex => ex.id === currentExerciseId) as Part2Exercise;
+    }
+    return LISTENING_DATA.part3.find(ex => ex.id === currentExerciseId) as Part2Exercise;
   }, [currentPart, currentExerciseId]);
 
-  const handleSelectExercise = (part: 'part1' | 'part2', id: string) => {
+  const handleSelectExercise = (part: 'part1' | 'part2' | 'part3', id: string) => {
     setCurrentPart(part);
     setCurrentExerciseId(id);
     setIsFinished(false);
@@ -687,6 +714,13 @@ export default function App() {
       setIsFinished(false);
       setIsReviewMode(false);
       setUserAnswers({});
+    } else if (currentPart === 'part2') {
+      // Go to first exercise of part 3
+      setCurrentPart('part3');
+      setCurrentExerciseId(LISTENING_DATA.part3[0].id);
+      setIsFinished(false);
+      setIsReviewMode(false);
+      setUserAnswers({});
     } else {
       // End of all exercises, maybe just reset or stay
       setIsFinished(false);
@@ -719,7 +753,7 @@ export default function App() {
         <header className={`h-16 border-b border-zinc-900 flex items-center justify-between transition-all duration-300 bg-zinc-950/50 backdrop-blur-md sticky top-0 z-30 ${isSidebarOpen ? 'px-6' : 'pl-16 pr-6'}`}>
           <div className="flex items-center gap-4">
             <div className="hidden md:flex items-center gap-2 text-sm text-zinc-500">
-              <span className="capitalize">{currentPart === 'part1' ? 'Phần 1' : 'Phần 2'}</span>
+              <span className="capitalize">{currentPart === 'part1' ? 'Phần 1' : currentPart === 'part2' ? 'Phần 2' : 'Phần 3'}</span>
               <ChevronRight className="w-3 h-3" />
               <span className="text-zinc-300 font-medium">{currentExercise.title}</span>
             </div>
@@ -768,7 +802,7 @@ export default function App() {
               </motion.div>
             ) : (
               <motion.div
-                key={`part2-${currentExerciseId}`}
+                key={`part23-${currentExerciseId}`}
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
